@@ -11,7 +11,7 @@
  */ 
 
 
-
+#STILL NEED THE M1 FORWARD AND REVERSE
 #include <avr/io.h>
 
 char sensorval = 0; //dropping last two bits so can be char
@@ -58,7 +58,7 @@ int main(void)
         //-100% duty cycle 
 	        PORTD = 0b11111110;
 			PORTC = 1<< PC3 | 1<< PC2;
-		    OCR0A = 0xFF;
+		    OCR0A = 0x00;
 
 		}
 
@@ -75,7 +75,7 @@ int main(void)
 		//Neutral Light
         //motor off
 		   PORTD = 0b11111011;
-           OCR0A = 0x00;
+           OCR0A = 0xFF;
 		}
 
 		if(sensorval >= 153 && sensorval < 204){
@@ -95,7 +95,7 @@ int main(void)
 		//Turn on high light
         //+100 duty cycle
 		PORTD = 0b11101111;
-        OCR0A = 0xFF;
+        OCR0A = 0x00;
 		}
 
 		
