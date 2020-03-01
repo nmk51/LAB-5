@@ -11,7 +11,7 @@
  */ 
 
 
-#STILL NEED THE M1 FORWARD AND REVERSE
+
 #include <avr/io.h>
 
 char sensorval = 0; //dropping last two bits so can be char
@@ -23,7 +23,8 @@ int main(void)
 
    DDRC = 0x00;
    PORTB = 0x00;
-   DDRB = 1 << PORTB1 | 1<< PORTB2;
+   DDRB = 0xFF;
+   PORTB = 0x00;
    DDRD = 0xff;
   // DDRD = 1 << PD6 | 1<< PD5;
    PORTD = 0xFF;
@@ -43,23 +44,23 @@ int main(void)
     while (1)
 
     {
-
+PORTB = 0x00;
 		ADCSRA |= (1<<ADSC); //Turns bit 6 on to start conversion
 
 		while ((ADCSRA & (1<<ADIF))==0){ //Checks bit 4 to see if flag is up(finished reading)
 
 		       sensorval = ADCH; //Reads the sensor val
                
-			  
-
+	if (sensorval < 102) {		  
+PORTB = 0b00000100;
 		if(sensorval >= 0 && sensorval < 51){
 
 		//Turn on lowest light
-        //-100% duty cycle 
+        //-75% duty cycle 
 	        PORTD = 0b11111110;
 			PORTC = 1<< PC3 | 1<< PC2;
-		    OCR0A = 0x00;
-
+		    OCR0A = 0x3F;
+            //PORTB = 0b00000100;
 		}
 
 		if(sensorval >= 51 && sensorval < 102){
@@ -67,40 +68,46 @@ int main(void)
 		//Turn on low light
         //-50% duty cycle
 	        PORTD = 0b11111101; 
-            OCR0A = 0x7F;
+            OCR0A = 0xA0;
+			//PORTB = 0b00000100;
+			
 		}
-
+		}
 		if(sensorval >= 102 && sensorval < 153){
 
 		//Neutral Light
         //motor off
 		   PORTD = 0b11111011;
-           OCR0A = 0xFF;
+           OCR0A = 0x00;
+		   PORTB = 0x00;
 		}
-
+if (sensorval >= 153){
+	PORTB = 0b00000010;
 		if(sensorval >= 153 && sensorval < 204){
 
 		//Turn on medium light
-        //+50% duty cycle
+        //+25% duty cycle
 		PORTD = 0b11110111;
-		OCR0A = 0x7F;
-		
+		OCR0A = 0xA0;
+		//PORTB = 0b00000010;
 
 		}
 
+		//PORTB = 0x00;
 		
-
 		if(sensorval >= 204){
 
 		//Turn on high light
         //+100 duty cycle
 		PORTD = 0b11101111;
-        OCR0A = 0x00;
+        OCR0A = 0x3F;
+		//PORTB =  0b00000010;
+
 		}
 
 		
 
-		
+}
 
 		}
 
